@@ -193,6 +193,10 @@
             "type": "string",
             "description": "Published tag when applicable."
           },
+          "extractor_id": {
+            "type": "string",
+            "description": "Extractor identifier used for extraction when available."
+          },
           "document_type_id": {
             "type": "string",
             "description": "Document type identifier returned by extraction."
@@ -205,13 +209,18 @@
             "type": "object",
             "description": "Extraction results returned by UiPath Documents."
           },
+          "extraction_time_seconds": {
+            "type": "number",
+            "description": "Elapsed time in seconds for the extract_async call."
+          },
           "validation_action": {
             "type": "object",
             "description": "ValidateExtractionAction created when validate_extraction is true."
           }
         },
         "required": [
-          "extraction_results"
+          "extraction_results",
+          "extraction_time_seconds"
         ]
       }
     }

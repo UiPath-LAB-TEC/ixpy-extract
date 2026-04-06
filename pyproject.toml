@@ -1,6 +1,6 @@
 [project]
 name = "ixpy-extract"
-version = "0.1.9"
+version = "0.1.11"
 authors = [{ name = "Nathan Ness" }]
 description = "IXP Extraction Agent"
 readme = "README.md"

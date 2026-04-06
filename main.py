@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import secrets
 import tempfile
+import time
 from pathlib import Path
 from typing import Annotated, Any, Dict, List, Optional
 from uuid import UUID
@@ -369,9 +370,13 @@ class Output(BaseModel):
     project_type: Optional[str]
     project_name: Optional[str] = None
     project_tag: Optional[str] = None
+    extractor_id: Optional[str] = None
     document_type_id: Optional[str]
     document_id: Optional[str]
     extraction_results: Dict[str, Any]
+    extraction_time_seconds: float = Field(
+        ..., description="Elapsed time in seconds for the extract_async call."
+    )
     validation_action: Optional[ValidateExtractionAction] = None
 
 
@@ -613,6 +618,7 @@ async def _run_async(input_data: Input) -> Output:
     project_tag: Optional[str] = input_data.project_tag
     project_version: Optional[int] = input_data.project_version
     document_type_name: Optional[str] = None
+    extractor_id: Optional[str] = None
     extraction_response: ExtractionResponse
 
     if classification_result:
@@ -628,6 +634,7 @@ async def _run_async(input_data: Input) -> Output:
         project_name = extraction_project.name
         project_tag = extraction_project.project_tag or project_tag
         project_version = extraction_project.project_version or project_version
+        extractor_id = extraction_project.extractor_id
         if project_type_enum == ProjectType.MODERN:
             document_type_name = _resolve_modern_document_type(
                 extraction_project=extraction_project,
@@ -650,6 +657,7 @@ async def _run_async(input_data: Input) -> Output:
             project_name = extraction_project.name
             project_tag = extraction_project.project_tag or project_tag
             project_version = extraction_project.project_version or project_version
+            extractor_id = extraction_project.extractor_id
             if project_type_enum == ProjectType.MODERN:
                 document_type_name = _resolve_modern_document_type(
                     extraction_project=extraction_project,
@@ -698,6 +706,7 @@ async def _run_async(input_data: Input) -> Output:
         )
 
         logger.info("Extracting document with project_type=%s", project_type_enum.value)
+        extraction_started = time.perf_counter()
         extraction_response = await _extract_document(
             project_type_enum,
             project_name,
@@ -706,6 +715,7 @@ async def _run_async(input_data: Input) -> Output:
             document_type_name,
             downloaded_path,
         )
+        extraction_time_seconds = time.perf_counter() - extraction_started
 
     validation_action = None
     if input_data.validate_extraction:
@@ -737,11 +747,13 @@ async def _run_async(input_data: Input) -> Output:
         project_type=project_type_value,
         project_name=project_name,
         project_tag=project_tag,
+        extractor_id=extractor_id,
         document_type_id=extraction_response.document_type_id,
         document_id=extraction_response.extraction_result.document_id,
         extraction_results=extraction_response.extraction_result.model_dump(
             by_alias=True
         ),
+        extraction_time_seconds=extraction_time_seconds,
         validation_action=validation_action,
     )
 
