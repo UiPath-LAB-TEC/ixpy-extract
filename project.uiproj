@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Function",
+  "Name": "ixpy-extract",
+  "Description": "IXP Extraction Agent",
+  "MainFile": null
+}

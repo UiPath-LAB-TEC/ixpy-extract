@@ -2,227 +2,515 @@
     "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
     "$id": "entry-points.json",
     "entryPoints": [
-    {
-      "filePath": "main.py",
-      "uniqueId": "0c72417c-ced4-421a-a2a5-517fbdf43b5d",
-      "type": "agent",
-      "input": {
-        "type": "object",
-        "properties": {
-          "file_resource": {
-            "type": "object",
-            "description": "UiPath IResource descriptor for a Data Service file.",
-            "properties": {
-              "ID": {
-                "type": "string",
-                "description": "Resource ID (UUID string)."
-              },
-              "FullName": {
-                "type": "string",
-                "description": "File name."
-              },
-              "MimeType": {
-                "type": "string",
-                "description": "MIME type."
-              },
-              "Metadata": {
-                "type": "object",
-                "description": "Metadata map."
-              }
+        {
+            "filePath": "main.py",
+            "uniqueId": "1b29f68a-d50c-4a64-bb84-53b8a44c074e",
+            "type": "function",
+            "input": {
+                "type": "object"
             },
-            "required": ["ID"]
-          },
-          "project_type": {
-            "type": "string",
-            "description": "Project flavor. Use PRETRAINED, MODERN, or IXP when extracting without classification_results."
-          },
-          "project_name": {
-            "type": "string",
-            "description": "DU Modern or IXP project name. Required when classification_results are not provided."
-          },
-          "project_tag": {
-            "type": "string",
-            "description": "Published tag (legacy). Use project_version for MODERN or IXP extraction."
-          },
-          "project_version": {
-            "type": "integer",
-            "description": "Published project version (integer). Required when project_type is MODERN or IXP."
-          },
-          "pipeline_json": {
-            "type": "object",
-            "description": "Pipeline configuration containing extraction_projects mapped by document type.",
-            "properties": {
-              "project_id": {
-                "type": "string",
-                "description": "Classification project ID."
-              },
-              "project_name": {
-                "type": "string",
-                "description": "Classification project name."
-              },
-              "project_type": {
-                "type": "string",
-                "description": "Classification project type."
-              },
-              "classifier_id": {
-                "type": "string",
-                "description": "Classifier identifier."
-              },
-              "extraction_projects": {
+            "output": {
                 "type": "object",
-                "description": "Map of document type keys to extraction projects.",
-                "additionalProperties": {
-                  "type": "object",
-                  "description": "Extraction project configuration.",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "Extraction project ID (UUID string)."
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Extraction project name."
-                    },
+                "properties": {
                     "project_type": {
-                      "type": "string",
-                      "description": "Extraction project type (PRETRAINED, MODERN, IXP)."
+                        "type": "string"
                     },
-                    "project_version": {
-                      "type": "integer",
-                      "description": "Published project version (integer). Required for MODERN or IXP extraction."
+                    "project_name": {
+                        "type": "string"
                     },
                     "project_tag": {
-                      "type": "string",
-                      "description": "Published tag (legacy). Use project_version for MODERN or IXP extraction."
+                        "type": "string"
                     },
                     "extractor_id": {
-                      "type": "string",
-                      "description": "Extractor identifier for the project."
+                        "type": "string"
                     },
-                    "document_type_name": {
-                      "type": "string",
-                      "description": "Document type name used for extraction (required for MODERN; used for PRETRAINED when provided)."
+                    "document_type_id": {
+                        "type": "string"
+                    },
+                    "document_id": {
+                        "type": "string"
+                    },
+                    "extraction_results": {
+                        "additionalProperties": true,
+                        "title": "Extraction Results",
+                        "type": "object"
+                    },
+                    "extraction_time_seconds": {
+                        "description": "Elapsed time in seconds for the extract_async call.",
+                        "title": "Extraction Time Seconds",
+                        "type": "number"
+                    },
+                    "validation_action": {
+                        "description": "A model representing a validation action for document extraction.",
+                        "properties": {
+                            "actionData": {
+                                "additionalProperties": true,
+                                "title": "Actiondata",
+                                "type": "object"
+                            },
+                            "actionStatus": {
+                                "title": "Actionstatus",
+                                "type": "string"
+                            },
+                            "projectId": {
+                                "title": "Projectid",
+                                "type": "string"
+                            },
+                            "projectType": {
+                                "description": "Project types available and supported by Documents Service.",
+                                "enum": [
+                                    "IXP",
+                                    "Modern",
+                                    "Pretrained"
+                                ],
+                                "title": "ProjectType",
+                                "type": "string"
+                            },
+                            "tag": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "title": "Tag"
+                            },
+                            "operationId": {
+                                "title": "Operationid",
+                                "type": "string"
+                            },
+                            "extractorId": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "title": "Extractorid"
+                            },
+                            "documentTypeId": {
+                                "title": "Documenttypeid",
+                                "type": "string"
+                            },
+                            "validatedExtractionResults": {
+                                "anyOf": [
+                                    {
+                                        "description": "A model representing the result of a document extraction process.",
+                                        "properties": {
+                                            "DocumentId": {
+                                                "title": "Documentid",
+                                                "type": "string"
+                                            },
+                                            "ResultsVersion": {
+                                                "title": "Resultsversion",
+                                                "type": "integer"
+                                            },
+                                            "ResultsDocument": {
+                                                "additionalProperties": true,
+                                                "title": "Resultsdocument",
+                                                "type": "object"
+                                            },
+                                            "ExtractorPayloads": {
+                                                "anyOf": [
+                                                    {
+                                                        "items": {
+                                                            "additionalProperties": true,
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    {
+                                                        "type": "null"
+                                                    }
+                                                ],
+                                                "default": null,
+                                                "title": "Extractorpayloads"
+                                            },
+                                            "BusinessRulesResults": {
+                                                "anyOf": [
+                                                    {
+                                                        "items": {
+                                                            "additionalProperties": true,
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    {
+                                                        "type": "null"
+                                                    }
+                                                ],
+                                                "default": null,
+                                                "title": "Businessrulesresults"
+                                            }
+                                        },
+                                        "required": [
+                                            "DocumentId",
+                                            "ResultsVersion",
+                                            "ResultsDocument"
+                                        ],
+                                        "title": "ExtractionResult",
+                                        "type": "object"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null
+                            },
+                            "dataProjection": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "description": "A model representing a projection of a field group value in a document extraction result.",
+                                            "properties": {
+                                                "fieldGroupName": {
+                                                    "title": "Fieldgroupname",
+                                                    "type": "string"
+                                                },
+                                                "fieldValues": {
+                                                    "items": {
+                                                        "description": "A model representing a projection of a field value in a document extraction result.",
+                                                        "properties": {
+                                                            "id": {
+                                                                "title": "Id",
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "title": "Name",
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ],
+                                                                "title": "Value"
+                                                            },
+                                                            "unformattedValue": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ],
+                                                                "title": "Unformattedvalue"
+                                                            },
+                                                            "confidence": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "number"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ],
+                                                                "title": "Confidence"
+                                                            },
+                                                            "ocrConfidence": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "number"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ],
+                                                                "title": "Ocrconfidence"
+                                                            },
+                                                            "type": {
+                                                                "description": "Field types supported by Document Understanding service.",
+                                                                "enum": [
+                                                                    "Text",
+                                                                    "Number",
+                                                                    "Date",
+                                                                    "Name",
+                                                                    "Address",
+                                                                    "Keyword",
+                                                                    "Set",
+                                                                    "Boolean",
+                                                                    "Table",
+                                                                    "Internal"
+                                                                ],
+                                                                "title": "FieldType",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "value",
+                                                            "unformattedValue",
+                                                            "confidence",
+                                                            "ocrConfidence",
+                                                            "type"
+                                                        ],
+                                                        "title": "FieldValueProjection",
+                                                        "type": "object"
+                                                    },
+                                                    "title": "Fieldvalues",
+                                                    "type": "array"
+                                                }
+                                            },
+                                            "required": [
+                                                "fieldGroupName",
+                                                "fieldValues"
+                                            ],
+                                            "title": "FieldGroupValueProjection",
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Dataprojection"
+                            }
+                        },
+                        "required": [
+                            "actionData",
+                            "actionStatus",
+                            "projectId",
+                            "projectType",
+                            "tag",
+                            "operationId",
+                            "extractorId",
+                            "documentTypeId"
+                        ],
+                        "title": "ValidateExtractionAction",
+                        "type": "object"
                     }
-                  },
-                  "required": ["name", "project_type"]
-                }
-              },
-              "validate_classification": {
-                "type": "boolean",
-                "description": "Pipeline setting for classification validation."
-              },
-              "validate_extraction": {
-                "type": "boolean",
-                "description": "Pipeline setting for extraction validation."
-              },
-              "validate_extraction_later": {
-                "type": "boolean",
-                "description": "Pipeline setting for delayed extraction validation."
-              },
-              "perform_classification": {
-                "type": "boolean",
-                "description": "Pipeline setting for classification."
-              },
-              "perform_extraction": {
-                "type": "boolean",
-                "description": "Pipeline setting for extraction."
-              }
+                },
+                "required": [
+                    "project_type",
+                    "document_type_id",
+                    "document_id",
+                    "extraction_results",
+                    "extraction_time_seconds"
+                ],
+                "title": "Output"
+            },
+            "graph": {
+                "nodes": [
+                    {
+                        "id": "main.py:802",
+                        "name": "main",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:776",
+                        "name": "_run_async",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:529",
+                        "name": "_file_resource_filename",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:622",
+                        "name": "_apply_extract_argument_rules",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:448",
+                        "name": "_classification_document_type_key",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:476",
+                        "name": "_resolve_extraction_project",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:419",
+                        "name": "_parse_project_type",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:432",
+                        "name": "_parse_action_priority",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:547",
+                        "name": "_build_action_title",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:508",
+                        "name": "_resolve_modern_document_type",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:565",
+                        "name": "_download_file_resource",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:533",
+                        "name": "_parse_resource_id",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:576",
+                        "name": "_extract_document",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:520",
+                        "name": "_resolve_pretrained_document_type_from_project",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:499",
+                        "name": "_resolve_pretrained_document_type",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:553",
+                        "name": "_documents_action_folder_name",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    }
+                ],
+                "edges": [
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:529"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:622"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:448"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:476"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:419"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:432"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:547"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:508"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:419"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:419"
+                    },
+                    {
+                        "source": "main.py:565",
+                        "target": "main.py:533"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:565"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:576"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:520"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:508"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:499"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:520"
+                    },
+                    {
+                        "source": "main.py:776",
+                        "target": "main.py:553"
+                    },
+                    {
+                        "source": "main.py:802",
+                        "target": "main.py:776"
+                    }
+                ]
             }
-          },
-          "classification_results": {
-            "type": "array",
-            "description": "List of classification results to reuse for extraction instead of classifying again.",
-            "items": {
-              "type": "object",
-              "description": "ClassificationResult"
-            }
-          },
-          "validated_classification_action": {
-            "type": "object",
-            "description": "Validation action used to retrieve validated classification results when validate_classification is true."
-          },
-          "validate_classification": {
-            "type": "boolean",
-            "description": "When true, fetch validated classification results from the provided validated_classification_action."
-          },
-          "validate_extraction": {
-            "type": "boolean",
-            "description": "When true, create a validation action for the extraction results."
-          },
-          "action_title": {
-            "type": "string",
-            "description": "Title for the validation action."
-          },
-          "action_priority": {
-            "type": "string",
-            "description": "Priority for the validation action (LOW, MEDIUM, HIGH, CRITICAL)."
-          },
-          "action_catalog": {
-            "type": "string",
-            "description": "Action catalog name for the validation action."
-          },
-          "action_folder": {
-            "type": "string",
-            "description": "Folder where the validation action should be created."
-          },
-          "storage_bucket_name": {
-            "type": "string",
-            "description": "Storage bucket name used for validation actions."
-          },
-          "storage_bucket_directory_path": {
-            "type": "string",
-            "description": "Directory path in the storage bucket for validation actions."
-          }
-        },
-        "required": [
-          "file_resource"
-        ]
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "project_type": {
-            "type": "string",
-            "description": "Project flavor used for extraction."
-          },
-          "project_name": {
-            "type": "string",
-            "description": "DU Modern or IXP project name when applicable."
-          },
-          "project_tag": {
-            "type": "string",
-            "description": "Published tag when applicable."
-          },
-          "extractor_id": {
-            "type": "string",
-            "description": "Extractor identifier used for extraction when available."
-          },
-          "document_type_id": {
-            "type": "string",
-            "description": "Document type identifier returned by extraction."
-          },
-          "document_id": {
-            "type": "string",
-            "description": "Document identifier returned by extraction."
-          },
-          "extraction_results": {
-            "type": "object",
-            "description": "Extraction results returned by UiPath Documents."
-          },
-          "extraction_time_seconds": {
-            "type": "number",
-            "description": "Elapsed time in seconds for the extract_async call."
-          },
-          "validation_action": {
-            "type": "object",
-            "description": "ValidateExtractionAction created when validate_extraction is true."
-          }
-        },
-        "required": [
-          "extraction_results",
-          "extraction_time_seconds"
-        ]
-      }
-    }
-  ]
+        }
+    ]
 }

@@ -1,0 +1,43 @@
+{
+  "file_resource": {
+    "ID": "e826fe01-8249-46c0-0fc7-08deab90440b",
+    "FullName": "Sample Invoice.pdf",
+    "MimeType": "application/pdf",
+    "Metadata": {}
+  },
+  "project_type": null,
+  "project_name": null,
+  "project_tag": null,
+  "project_version": null,
+  "pipeline_json": {
+    "project_id": null,
+    "project_name": null,
+    "project_type": null,
+    "project_version": null,
+    "extraction_project_extractors": {
+      "00000000-0000-0000-0000-000000000000": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "Pretrained",
+        "project_type": "Pretrained",
+        "extractor_id": "invoices",
+        "project_version": null
+      }
+    },
+    "validate_classification": false,
+    "validate_extraction": false,
+    "validate_extraction_later": false,
+    "perform_classification": false,
+    "perform_extraction": true
+  },
+  "classification_results": null,
+  "validated_classification_action": null,
+  "validate_classification": false,
+  "validate_extraction": false,
+  "action_title": null,
+  "action_priority": null,
+  "action_catalog": null,
+  "action_folder": null,
+  "storage_bucket_name": null,
+  "storage_bucket_directory_path": null,
+  "document_type": null
+}

@@ -23,6 +23,12 @@ from uipath.platform.documents import (
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+DEFAULT_ACTION_PRIORITY = "MEDIUM"
+DEFAULT_ACTION_CATALOG = "default_du_actions"
+DEFAULT_ACTION_FOLDER = "Shared/nn_IXP"
+DEFAULT_STORAGE_BUCKET_NAME = "du_storage_bucket"
+DEFAULT_STORAGE_BUCKET_DIRECTORY_PATH = "/"
+
 load_dotenv()
 sdk = UiPath()
 
@@ -202,25 +208,25 @@ class Input(BaseModel):
         description="Title for the validation action.",
     )
     action_priority: Optional[str] = Field(
-        default="MEDIUM",
+        default=DEFAULT_ACTION_PRIORITY,
         description=(
             "Priority for the validation action (LOW, MEDIUM, HIGH, CRITICAL)."
         ),
     )
     action_catalog: Optional[str] = Field(
-        default="default_du_actions",
+        default=DEFAULT_ACTION_CATALOG,
         description="Action catalog name for the validation action.",
     )
     action_folder: Optional[str] = Field(
-        default="Shared",
+        default=DEFAULT_ACTION_FOLDER,
         description="Folder where the validation action should be created.",
     )
     storage_bucket_name: Optional[str] = Field(
-        default="du_storage_bucket",
+        default=DEFAULT_STORAGE_BUCKET_NAME,
         description="Storage bucket name used for validation actions.",
     )
     storage_bucket_directory_path: Optional[str] = Field(
-        default="/",
+        default=DEFAULT_STORAGE_BUCKET_DIRECTORY_PATH,
         description="Directory path in the storage bucket for validation actions.",
     )
     classification_results: Optional[List[InputClassificationResult]] = Field(
@@ -231,6 +237,24 @@ class Input(BaseModel):
         default=None,
         description="Validation action used to retrieve validated classification results when validate_classification is true.",
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def apply_validation_action_defaults(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+
+        normalized = dict(data)
+        for field_name, default_value in {
+            "action_priority": DEFAULT_ACTION_PRIORITY,
+            "action_catalog": DEFAULT_ACTION_CATALOG,
+            "action_folder": DEFAULT_ACTION_FOLDER,
+            "storage_bucket_name": DEFAULT_STORAGE_BUCKET_NAME,
+            "storage_bucket_directory_path": DEFAULT_STORAGE_BUCKET_DIRECTORY_PATH,
+        }.items():
+            if normalized.get(field_name) is None:
+                normalized[field_name] = default_value
+        return normalized
 
     @model_validator(mode="after")
     def validate_settings(self) -> "Input":
@@ -523,6 +547,12 @@ def _build_action_title(file_name: str, override: Optional[str]) -> str:
     return f"Validate Extraction - {filename} - {suffix}"
 
 
+def _documents_action_folder_name(action_folder: Optional[str]) -> Optional[str]:
+    if not action_folder:
+        return action_folder
+    return action_folder.strip().rstrip("/").split("/")[-1]
+
+
 async def _download_file_resource(
     file_resource: FileResource,
     destination_path: Path,
@@ -729,7 +759,7 @@ async def _run_async(input_data: Input) -> Output:
             action_title=action_title,
             action_priority=priority_enum,
             action_catalog=input_data.action_catalog,
-            action_folder=input_data.action_folder,
+            action_folder=_documents_action_folder_name(input_data.action_folder),
             storage_bucket_name=input_data.storage_bucket_name,
             storage_bucket_directory_path=input_data.storage_bucket_directory_path,
             extraction_response=extraction_response,
