@@ -36,6 +36,8 @@ The per-agent caller workflow supplies configuration only. It should not duplica
 - `deploy`: whether to deploy after tests pass, default `false`
 - `deploy_target`: one of `my-workspace`, `tenant`, or `folder`
 - `folder`: folder name when `deploy_target` is `folder`
+- `version_strategy`: one of `source` or `patch-and-commit`, default `source`
+- `version_commit_message`: commit message for an automated version bump, default `chore: bump coded agent version [skip ci]`
 
 ## Secrets And Variables
 
@@ -125,6 +127,19 @@ uip codedagent deploy --tenant
 uip codedagent deploy --folder "$FOLDER"
 ```
 
+The workflow does not run `uip codedagent pack` as a separate default step. `uip codedagent deploy` is the standard deployment command because it validates the project, refreshes the lock file when needed, builds the package, and publishes it in one operation.
+
+## Version Strategy
+
+UiPath package feeds reject duplicate package versions. A repo that deploys the same `pyproject.toml` version twice can fail with `409 Package already exists`.
+
+The workflow supports two version strategies:
+
+- `source`: deploy exactly the version committed in `pyproject.toml`. This is the safest default because released source and deployed package versions match. If the version already exists, deploy fails and the repo owner bumps the version in source.
+- `patch-and-commit`: before deploy, increment the patch segment of `[project].version` in `pyproject.toml`, run `uv lock`, commit the updated version files back to the agent repo, and deploy that new commit. This requires `contents: write` permission in the caller workflow and should use a `[skip ci]` commit message to prevent a second workflow run.
+
+The reusable workflow must fail early if `version_strategy` is `patch-and-commit` but it cannot push to the repository. It must not bump major or minor versions automatically.
+
 The caller workflow should decide when deployment is enabled, typically:
 
 - pull requests: test and validate only
@@ -153,6 +168,7 @@ jobs:
       run_output_validation: true
       validation_script: scripts/validate_codedagent_output.py
       deploy: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      version_strategy: source
       deploy_target: folder
       folder: Shared
     secrets: inherit
@@ -165,6 +181,8 @@ jobs:
 - Failed `uip login` stops the job before smoke test or deploy.
 - Failed smoke test uploads available logs and output artifacts.
 - Failed output validation uploads `codedagent-output.json`.
+- Version strategy `patch-and-commit` fails before deploy if the workflow cannot push the version bump.
+- Duplicate package version conflicts fail under `source` strategy and should be fixed with a source-controlled version bump.
 - Deploy target `folder` requires `folder`; missing folder fails before deploy.
 
 ## Scope
