@@ -1,0 +1,25 @@
+name: UiPath Coded Agent
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  coded-agent:
+    uses: UiPath-LAB-TEC/coded-agent-gh-action/.github/workflows/uip-codedagent-ci.yml@main
+    with:
+      agent_root: .
+      python_version: "3.12"
+      input_file: input.json
+      run_python_tests: false
+      run_output_validation: true
+      validation_script: scripts/validate_codedagent_output.py
+      deploy: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      deploy_target: folder
+      folder: Shared
+      version_strategy: source
+      uipath_organization: ${{ vars.UIPATH_ORGANIZATION }}
+      uipath_tenant: ${{ vars.UIPATH_TENANT }}
+    secrets: inherit
