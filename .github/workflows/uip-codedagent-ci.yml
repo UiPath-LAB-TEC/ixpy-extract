@@ -13,6 +13,7 @@ jobs:
       agent_root: .
       python_version: "3.12"
       input_file: input.json
+      prepare_input_command: uv run python create_test_attachment.py
       run_python_tests: false
       run_output_validation: true
       validation_script: scripts/validate_codedagent_output.py

@@ -1,6 +1,6 @@
 {
   "file_resource": {
-    "ID": "e826fe01-8249-46c0-0fc7-08deab90440b",
+    "ID": "58ef049d-a88b-422f-1ef8-08ded2c4f3c4",
     "FullName": "Sample Invoice.pdf",
     "MimeType": "application/pdf",
     "Metadata": {}
@@ -39,5 +39,6 @@
   "action_folder": null,
   "storage_bucket_name": null,
   "storage_bucket_directory_path": null,
-  "document_type": null
+  "document_type": null,
+  "extraction_results": {}
 }
